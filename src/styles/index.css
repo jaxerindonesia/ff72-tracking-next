@@ -2698,6 +2698,40 @@ img {
 .screening-ready svg { width: 17px; height: 17px; }
 .screening-ready.screening-not-ready { color: #d93645; }
 .profile-screening-content p { color: var(--color-text-secondary); font-size: 11px; line-height: 1.45; margin-top: 4px; }
+.profile-mobile-logout { display: none; }
+.logout-dialog-backdrop {
+  position: fixed;
+  z-index: 1200;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(5, 18, 36, .58);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fadeIn .18s ease-out;
+}
+.logout-dialog {
+  width: min(360px, 100%);
+  padding: 28px 24px 22px;
+  background: #fff;
+  border: 1px solid rgba(255,255,255,.7);
+  border-radius: 22px;
+  box-shadow: 0 24px 70px rgba(3, 18, 38, .28);
+  text-align: center;
+}
+.logout-dialog-icon { width: 58px; height: 58px; display: grid; place-items: center; margin: 0 auto 16px; color: #d93645; background: #fff0f1; border-radius: 18px; }
+.logout-dialog-icon svg { width: 26px; height: 26px; }
+.logout-dialog h2 { color: #0b1d33; font-family: var(--font-heading); font-size: 21px; }
+.logout-dialog p { max-width: 290px; margin: 8px auto 22px; color: #687b91; font-size: 12.5px; line-height: 1.55; }
+.logout-dialog-actions { display: grid; grid-template-columns: 1fr 1.2fr; gap: 10px; }
+.logout-dialog-actions button { min-height: 44px; display: flex; align-items: center; justify-content: center; gap: 7px; border-radius: 12px; font-size: 13px; font-weight: 700; }
+.logout-dialog-cancel { color: #42566e; background: #f1f5f9; border: 1px solid #dbe3ec; }
+.logout-dialog-confirm { color: #fff; background: #d93645; box-shadow: 0 7px 18px rgba(217,54,69,.24); }
+.logout-dialog-confirm svg { width: 16px; height: 16px; }
+.logout-dialog-cancel:hover { background: #e8eef5; }
+.logout-dialog-confirm:hover { background: #bd2937; }
 
 .mobile-bottom-nav { display: none; }
 
@@ -2757,5 +2791,26 @@ img {
   .qr-frame { width: min(245px, 100%); }
   .profile-hero { padding: 21px; border-radius: 20px; }
   .profile-panel-header, .profile-detail-row { padding-left: 18px; padding-right: 18px; }
+  .profile-mobile-logout {
+    width: 100%;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 18px;
+    color: #c52f3d;
+    background: #fff;
+    border: 1px solid #efcbd0;
+    border-radius: 17px;
+    box-shadow: var(--shadow-sm);
+    text-align: left;
+  }
+  .profile-mobile-logout > svg:first-child { width: 34px; height: 34px; padding: 8px; flex-shrink: 0; background: #fff0f1; border-radius: 50%; }
+  .profile-mobile-logout span { display: flex; flex: 1; flex-direction: column; gap: 2px; }
+  .profile-mobile-logout strong { font-size: 13px; }
+  .profile-mobile-logout small { color: #7b8797; font-size: 10px; }
+  .profile-mobile-logout > svg:last-child { width: 16px; height: 16px; color: #d3a0a6; }
+  .logout-dialog-backdrop { align-items: flex-end; padding: 16px 16px calc(16px + env(safe-area-inset-bottom)); }
+  .logout-dialog { padding: 26px 20px 20px; border-radius: 22px; }
   .program-timer-card { min-height: 245px; }
 }

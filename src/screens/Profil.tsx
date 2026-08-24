@@ -4,6 +4,7 @@ import {
   ChevronRight,
   Edit3,
   Mail,
+  LogOut,
   MapPin,
   Phone,
   Ruler,
@@ -19,8 +20,9 @@ import { useEffect, useState } from 'react'
 import { api } from '../lib/api'
 
 export default function Profil() {
-  const { user, setUser } = useAuth()
+  const { user, setUser, logout } = useAuth()
   const [editing, setEditing] = useState(false)
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false)
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
   const [screeningResult, setScreeningResult] = useState(fallbackScreening)
@@ -119,6 +121,37 @@ export default function Profil() {
           </div>
         </div>
       </section>
+
+      <button
+        type="button"
+        className="profile-mobile-logout"
+        onClick={() => setLogoutDialogOpen(true)}
+      >
+        <LogOut />
+        <span><strong>Keluar dari Akun</strong><small>Anda akan kembali ke halaman login</small></span>
+        <ChevronRight />
+      </button>
+
+      {logoutDialogOpen && (
+        <div className="logout-dialog-backdrop" onClick={() => setLogoutDialogOpen(false)}>
+          <div
+            className="logout-dialog"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="logout-dialog-title"
+            aria-describedby="logout-dialog-description"
+            onClick={(event) => event.stopPropagation()}
+          >
+            <div className="logout-dialog-icon"><LogOut /></div>
+            <h2 id="logout-dialog-title">Keluar dari akun?</h2>
+            <p id="logout-dialog-description">Anda perlu masuk kembali untuk mengakses program dan melihat progres FF72.</p>
+            <div className="logout-dialog-actions">
+              <button type="button" className="logout-dialog-cancel" onClick={() => setLogoutDialogOpen(false)}>Batal</button>
+              <button type="button" className="logout-dialog-confirm" onClick={logout}><LogOut /> Ya, Keluar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
