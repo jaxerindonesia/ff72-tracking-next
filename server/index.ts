@@ -53,6 +53,19 @@ const startOfToday = () => {
   return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()))
 }
 
+const consumptionScheduleMinutes: Record<string, number> = {
+  '1': 6 * 60, '2': 9 * 60, '3': 12 * 60, '4': 15 * 60, '5': 18 * 60, '6': 21 * 60,
+}
+
+const jakartaMinutesNow = () => {
+  const parts = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  }).formatToParts(new Date())
+  const hour = Number(parts.find((part) => part.type === 'hour')?.value || 0)
+  const minute = Number(parts.find((part) => part.type === 'minute')?.value || 0)
+  return hour * 60 + minute
+}
+
 const nextJakartaDay = (date = new Date()) => {
   const jakarta = new Date(date.getTime() + 7 * 60 * 60 * 1000)
   return new Date(Date.UTC(jakarta.getUTCFullYear(), jakarta.getUTCMonth(), jakarta.getUTCDate() + 1) - 7 * 60 * 60 * 1000)
@@ -400,6 +413,13 @@ app.get('/api/consumptions/today', requireAuth, async (request, res) => {
 app.put('/api/consumptions/:scheduleKey', requireAuth, async (request, res) => {
   const req = request as AuthRequest
   const key = String(request.params.scheduleKey)
+  const scheduledMinutes = consumptionScheduleMinutes[key]
+  if (scheduledMinutes === undefined) return res.status(400).json({ message: 'Jadwal konsumsi tidak valid.' })
+  if (request.body.done && jakartaMinutesNow() < scheduledMinutes) {
+    const hour = String(Math.floor(scheduledMinutes / 60)).padStart(2, '0')
+    const minute = String(scheduledMinutes % 60).padStart(2, '0')
+    return res.status(403).json({ message: `Jadwal ini baru dapat dikonfirmasi pukul ${hour}.${minute} WIB.` })
+  }
   const unique = { userId: userId(req), scheduleKey: key, consumedOn: startOfToday() }
   if (request.body.done) await prisma.consumptionLog.upsert({ where: { userId_scheduleKey_consumedOn: unique }, create: unique, update: { consumedAt: new Date() } })
   else await prisma.consumptionLog.deleteMany({ where: unique })

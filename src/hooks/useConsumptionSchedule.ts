@@ -15,7 +15,12 @@ export function useConsumptionSchedule() {
     }
   }, [])
 
-  const currentMinutes = now.getHours() * 60 + now.getMinutes()
+  const jakartaTime = new Intl.DateTimeFormat('en-GB', {
+    timeZone: 'Asia/Jakarta', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+  }).formatToParts(now)
+  const currentHours = Number(jakartaTime.find((part) => part.type === 'hour')?.value || 0)
+  const currentMinute = Number(jakartaTime.find((part) => part.type === 'minute')?.value || 0)
+  const currentMinutes = currentHours * 60 + currentMinute
   return (time: string) => {
     const [hours, minutes] = time.split('.').map(Number)
     return currentMinutes >= hours * 60 + minutes

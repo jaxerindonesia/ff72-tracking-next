@@ -48,7 +48,9 @@ export default function Dashboard() {
   const [readNotifications, setReadNotifications] = useState(() => {
     try { return JSON.parse(localStorage.getItem(notificationStorageKey)) || [] } catch { return [] }
   })
-  const unreadConsumptions = dueConsumptions.filter((item) => !readNotifications.includes(item.id))
+  const unreadConsumptions = dueConsumptions.filter((item) =>
+    !readNotifications.includes(item.id) && !consumedKeys.includes(String(item.id))
+  )
   const unreadDatabaseNotifications = databaseNotifications.filter((item) => !item.read_at)
   const gki = latestGlucose !== null && latestKetone !== null && latestKetone > 0
     ? latestGlucose / (18 * latestKetone)
@@ -85,6 +87,7 @@ export default function Dashboard() {
   }
   const confirmConsumption = async () => {
     if (!selectedConsumption) return
+    if (!isConsumptionDue(selectedConsumption.time)) return
     await toggleConsumption(selectedConsumption.id)
     setSelectedConsumption(null)
   }
@@ -93,6 +96,7 @@ export default function Dashboard() {
     setReadNotifications(nextRead)
     localStorage.setItem(notificationStorageKey, JSON.stringify(nextRead))
     setShowNotifications(false)
+    setSelectedConsumption(item)
     window.setTimeout(() => document.querySelector('.consumption-list-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 50)
   }
 
@@ -312,7 +316,8 @@ export default function Dashboard() {
         <div className="card consumption-list-card">
           {consumptionLog.map((item) => {
             const consumed = consumedKeys.includes(String(item.id))
-            return <div key={item.id} role="button" tabIndex={0} onClick={() => setSelectedConsumption(item)} onKeyDown={(event) => { if (event.key === 'Enter' || event.key === ' ') setSelectedConsumption(item) }} className={`consumption-item${consumed ? ' consumption-item-consumed' : ''}`}>
+            const available = isConsumptionDue(item.time)
+            return <div key={item.id} role="button" tabIndex={available ? 0 : -1} aria-disabled={!available} onClick={() => { if (available) setSelectedConsumption(item) }} onKeyDown={(event) => { if (available && (event.key === 'Enter' || event.key === ' ')) setSelectedConsumption(item) }} className={`consumption-item${consumed ? ' consumption-item-consumed' : ''}${available ? '' : ' consumption-item-locked'}`}>
               <div className="consumption-time-block">
                 <span className="consumption-time-text">{item.time}</span>
                 {consumed && (
@@ -328,8 +333,9 @@ export default function Dashboard() {
               <div className="consumption-text" style={{ flex: 1 }}>
                 <h4>{item.meal} — {item.items}</h4>
                 <p>{item.detail}</p>
+                {!available && <small className="consumption-locked-label">Tersedia pukul {item.time} WIB</small>}
               </div>
-              <ChevronRight size={16} style={{ color: 'var(--color-text-muted)', flexShrink: 0 }} />
+              {available ? <ChevronRight size={16} style={{ color: 'var(--color-text-muted)', flexShrink: 0 }} /> : <span className="consumption-lock" aria-hidden="true">🔒</span>}
             </div>
           })}
         </div>

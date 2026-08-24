@@ -2478,6 +2478,11 @@ img {
 .consumption-item-consumed .consumption-time-text { color: #58a219; }
 .consumption-item-consumed .consumption-text h4 { color: #397f16; }
 .consumption-item-consumed .consumption-icon { background: rgba(113, 199, 0, .12) !important; }
+.consumption-item-locked { cursor: not-allowed; opacity: .62; background: #f7f9fc; }
+.consumption-item-locked:hover { background: #f7f9fc; }
+.consumption-item-locked .consumption-text h4 { color: #53657a; }
+.consumption-locked-label { display: block; margin-top: 4px; color: #8a6b19; font-size: 9.5px; font-weight: 700; }
+.consumption-lock { width: 24px; flex-shrink: 0; font-size: 13px; filter: grayscale(1); text-align: center; }
 .consumption-confirm-overlay { position: fixed; z-index: 1200; inset: 0; display: grid; place-items: center; padding: 20px; background: rgba(5, 18, 36, .48); backdrop-filter: blur(4px); animation: consumptionOverlayIn .2s ease-out; }
 .consumption-confirm-modal { position: relative; width: min(400px, 100%); padding: 28px 24px 22px; background: #fff; border: 1px solid #dce6ef; border-radius: 22px; box-shadow: 0 24px 70px rgba(7, 35, 68, .24); text-align: center; animation: consumptionModalIn .3s cubic-bezier(.2,.8,.2,1); }
 .consumption-confirm-close { position: absolute; top: 13px; right: 13px; width: 32px; height: 32px; display: grid; place-items: center; color: #718096; background: #edf3f8; border-radius: 50%; }
